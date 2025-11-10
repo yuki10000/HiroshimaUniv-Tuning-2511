@@ -14,6 +14,13 @@ services:
       - JAEGER_ENDPOINT=http://jaeger:14268/api/traces
     ports:
       - "9001:8080"
+    # ホストのソースをマウントして編集を即時反映し、air をコマンドで実行する
+    volumes:
+      - ./backend:/usr/src/backend:cached
+      - go-pkg:/go/pkg
+      - go-build:/root/.cache/go-build
+    command: ["air", "-c", ".air.toml"]
+    tty: true
     depends_on:
       db:
         condition: service_healthy
@@ -137,3 +144,7 @@ services:
 networks:
   network:
     driver: bridge
+
+volumes:
+  go-pkg:
+  go-build:
